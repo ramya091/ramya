@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Niran Matrimony 90s & 2k</title>
+<style>
+  body{font-family:Inter, Arial, sans-serif; margin:0; background:#f4f8fb; color:#0b2a4a}
+  .hero{background:linear-gradient(180deg,#0b4ea2 0%,#0b3f82 100%); color:white; padding:28px 18px; text-align:center}
+  .container{max-width:920px;margin:18px auto;padding:18px}
+  .card{background:white;border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(11,42,74,0.06)}
+  .logo{height:90px}
+  h1{margin:8px 0;font-size:26px;color:#072347}
+  p.lead{color:#234; margin-top:0}
+  .btn{background:#d4af37;color:#072347;padding:12px 18px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+  form .row{display:flex;gap:10px;flex-wrap:wrap}
+  form input, form select, form textarea{flex:1;padding:10px;border:1px solid #dde6f2;border-radius:8px}
+  label{font-weight:600;color:#0b2a4a}
+  .footer{text-align:center;color:#6b7b8c;font-size:13px;margin-top:16px}
+  .whats-note{background:#eaf7f0;padding:10px;border-radius:8px;margin-top:12px;color:#064e2a}
+  .banner{width:100%;border-radius:8px}
+</style>
+</head>
+<body>
+  <div class="hero">
+    <img src="banner.png" alt="Niran Matrimony Banner" class="banner"/>
+    <div style="margin-top:12px">
+      <img src="logo.png" alt="Niran Matrimony Logo" class="logo"/>
+      <h1>Niran Matrimony 90s & 2k</h1>
+      <p class="lead">Tamil Nadu's Trusted 90s–2K Matrimony</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h2>Register – Quick Profile</h2>
+      <p>Fill this short form — we'll open WhatsApp to confirm and save your details automatically.</p>
+
+      <form id="profileForm">
+        <div class="row">
+          <div style="flex:1;min-width:220px">
+            <label>Full Name</label><br/>
+            <input type="text" id="name" required placeholder="e.g. Ramesh Kumar"/>
+          </div>
+          <div style="flex:1;min-width:120px">
+            <label>Age</label><br/>
+            <input type="number" id="age" required min="18" max="60" placeholder="e.g. 28"/>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div style="flex:1;min-width:160px">
+            <label>Gender</label><br/>
+            <select id="gender">
+              <option>Male</option><option>Female</option><option>Other</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:160px">
+            <label>District</label><br/>
+            <input id="district" placeholder="e.g. Chennai"/>
+          </div>
+          <div style="flex:1;min-width:160px">
+            <label>Education</label><br/>
+            <input id="education" placeholder="e.g. B.E"/>
+          </div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Occupation</label><br/>
+          <input id="occupation" placeholder="e.g. Software Engineer"/>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>About / Message</label><br/>
+          <textarea id="about" rows="3" placeholder="Short note (optional)"></textarea>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <button type="button" class="btn" onclick="submitForm()">Submit & Open WhatsApp</button>
+          <button type="button" class="btn" style="background:#eef2ff;color:#072347" onclick="downloadCSV()">Download CSV (saved locally)</button>
+        </div>
+
+        <p class="whats-note">By submitting you agree to be contacted on WhatsApp. Only 18+ users. We never share your data.</p>
+      </form>
+    </div>
+
+    <div class="card" style="margin-top:14px;padding:14px">
+      <h3>How submissions work (no coding needed)</h3>
+      <ol>
+        <li>When you click "Submit & Open WhatsApp" the form opens WhatsApp with a prefilled message to <strong>9345386861</strong>.</li>
+        <li>The same details are added to a CSV file which you can download and keep as your database.</li>
+        <li>Later I can help connect this to Google Sheets / Airtable or a full admin panel.</li>
+      </ol>
+      <p style="font-size:13px;color:#556">If you want automatic saving to Google Sheets, tell me and I'll send a simple Zapier/Make recipe (may need small subscription).</p>
+    </div>
+
+    <div class="footer">© Niran Matrimony 90s & 2k — Tamil Nadu</div>
+  </div>
+
+<script>
+function submitForm(){
+  const name = encodeURIComponent(document.getElementById('name').value.trim());
+  const age = encodeURIComponent(document.getElementById('age').value.trim());
+  const gender = encodeURIComponent(document.getElementById('gender').value);
+  const district = encodeURIComponent(document.getElementById('district').value.trim());
+  const education = encodeURIComponent(document.getElementById('education').value.trim());
+  const occupation = encodeURIComponent(document.getElementById('occupation').value.trim());
+  const about = encodeURIComponent(document.getElementById('about').value.trim());
+
+  if(!name || !age){ alert('Please enter name and age (18+)'); return; }
+
+  // Prepare WhatsApp link
+  const waNumber = '919345386861';
+  const message = `Hi Niran Matrimony, I want to register.%0AName: ${name}%0AAge: ${age}%0AGender: ${gender}%0ADistrict: ${district}%0AEducation: ${education}%0AOccupation: ${occupation}%0AMessage: ${about}`;
+  const waLink = `https://wa.me/${waNumber}?text=${message}`;
+
+  // Save to local CSV (add to hidden in-memory store)
+  addToLocalCSV([name, age, gender, district, education, occupation, about]);
+
+  // Open WhatsApp in new tab (mobile opens app)
+  window.open(waLink, '_blank');
+}
+
+let csvRows = [];
+function addToLocalCSV(fields){
+  csvRows.push(fields.map(f => '"' + (f || '') + '"').join(','));
+}
+
+function downloadCSV(){
+  if(csvRows.length === 0){ alert('No submissions yet. Submit at least one profile.'); return; }
+  const header = '"Name","Age","Gender","District","Education","Occupation","Message"';
+  const csvContent = header + '\n' + csvRows.join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const filename = 'niran_profiles_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
